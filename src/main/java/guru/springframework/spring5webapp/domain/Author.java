@@ -1,6 +1,7 @@
 package guru.springframework.spring5webapp.domain;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -11,18 +12,16 @@ public class Author {
     private Long id;
     private String firstName;
     private String lastName;
-    @ManyToMany
-    @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Books> books;
+
+    @ManyToMany(mappedBy = "authors")
+    private Set<Book> books = new HashSet<>();
 
     public Author() {
     }
-n
-    public Author(String firstName, String lastName, Set<BNooks> books) {
+
+    public Author(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.books = books;
     }
 
     public Long getId() {
@@ -49,11 +48,12 @@ n
         this.lastName = lastName;
     }
 
-    public Set<Books> getBooks() {
+
+    public Set<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(Set<Books> books) {
+    public void setBooks(Set<Book> books) {
         this.books = books;
     }
 
@@ -74,7 +74,10 @@ n
 
         Author author = (Author) o;
 
-        return id != null ? id.equals(author.id) : author.id == null;
+        if (id != null ? !id.equals(author.id) : author.id != null) return false;
+        if (firstName != null ? !firstName.equals(author.firstName) : author.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(author.lastName) : author.lastName != null) return false;
+        return books != null ? books.equals(author.books) : author.books == null;
     }
 
     @Override
